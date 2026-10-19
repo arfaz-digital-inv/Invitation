@@ -166,3 +166,32 @@ h1, h2, h3, h4 {
         font-size: 0.75rem !important;
     }
 }
+/* Penyesuaian Judul Nama Pengantin */
+.hero-title {
+    font-size: 2.2rem;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.hero-title .ampersand {
+    font-size: 1.6rem;
+    color: #e8997a;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+}
+
+/* Di Layar HP, Tanda & Selalu di Tengah Baris Sendiri */
+@media screen and (max-width: 480px) {
+    .hero-title {
+        font-size: 1.8rem !important;
+    }
+    .hero-title .ampersand {
+        font-size: 1.3rem !important;
+        margin: 2px 0;
+    }
+}
