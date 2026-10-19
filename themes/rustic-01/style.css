@@ -1,0 +1,17 @@
+/* Styling Khas Rustic: Earth tone, warna floral/kayu lembut */
+body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background-color: #f7f4ef;
+    color: #4a3b32;
+    margin: 0;
+    padding: 0;
+}
+
+/* Custom scrollbar untuk kesan elegan */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-thumb {
+    background: #8c6d58;
+    border-radius: 10px;
+}
