@@ -93,7 +93,7 @@ function renderGallery(galleryImgs, themeName) {
         return;
     }
 
-    // 1. TEMA JAWA KERATON: Render Galeri Model Slider / Carousel 2 Foto Berpasangan
+    // 1. TEMA JAWA KERATON: Slider Otomatis 2 Foto Berpasangan Tanpa Tombol Manual
     if (themeName === "jawa-keraton-01") {
         const pairs = [];
         for (let i = 0; i < galleryImgs.length; i += 2) {
@@ -105,31 +105,26 @@ function renderGallery(galleryImgs, themeName) {
         let slidesHtml = pairs.map((pair, index) => `
             <div class="gallery-slide ${index === 0 ? 'active' : ''}" style="display: ${index === 0 ? 'flex' : 'none'}; justify-content: center; gap: 15px; width: 100%;">
                 ${pair.map(imgUrl => `
-                    <div style="flex: 1; max-width: 250px; aspect-ratio: 1/1; overflow: hidden; border-radius: 10px; border: 1px solid #d4af37; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+                    <div style="flex: 1; max-width: 250px; aspect-ratio: 1/1; overflow: hidden; border-radius: 10px; border: 1px solid #d4af37; box-shadow: 0 4px 12px rgba(0,0,0,0.6);">
                         <img src="${escapeHtml(imgUrl)}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
                     </div>
                 `).join('')}
             </div>
         `).join('');
 
+        // Wadah Murni Foto Tanpa Tombol Panah
         container.innerHTML = `
-            <div style="position: relative; max-width: 550px; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
+            <div style="position: relative; max-width: 520px; margin: 0 auto; display: flex; align-items: center; justify-content: center; min-height: 250px;">
                 ${slidesHtml}
             </div>
-            ${totalGallerySlides > 1 ? `
-            <div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 15px;">
-                <button onclick="changeGallerySlide(-1)" style="background: #181818; color: #d4af37; border: 1px solid #d4af37; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; font-size: 1rem; font-weight: bold;">❮</button>
-                <span id="gallery-indicator" style="color: #f9e076; font-size: 0.85rem; font-family: 'Cinzel', serif;">1 / ${totalGallerySlides}</span>
-                <button onclick="changeGallerySlide(1)" style="background: #181818; color: #d4af37; border: 1px solid #d4af37; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; font-size: 1rem; font-weight: bold;">❯</button>
-            </div>
-            ` : ''}
         `;
 
+        // Pindah Slide Otomatis Setiap 3.5 Detik
         if (totalGallerySlides > 1) {
             if (window.galleryInterval) clearInterval(window.galleryInterval);
             window.galleryInterval = setInterval(() => {
-                changeGallerySlide(1);
-            }, 4000);
+                autoNextGallerySlide();
+            }, 3500);
         }
 
     } else {
@@ -142,22 +137,18 @@ function renderGallery(galleryImgs, themeName) {
     }
 }
 
-function changeGallerySlide(direction) {
+// Fungsi Pindah Slide Otomatis
+function autoNextGallerySlide() {
     const slides = document.querySelectorAll(".gallery-slide");
     if (!slides.length) return;
 
     slides[currentSlideIndex].style.display = "none";
     slides[currentSlideIndex].classList.remove("active");
 
-    currentSlideIndex = (currentSlideIndex + direction + totalGallerySlides) % totalGallerySlides;
+    currentSlideIndex = (currentSlideIndex + 1) % totalGallerySlides;
 
     slides[currentSlideIndex].style.display = "flex";
     slides[currentSlideIndex].classList.add("active");
-
-    const indicator = document.getElementById("gallery-indicator");
-    if (indicator) {
-        indicator.innerText = `${currentSlideIndex + 1} / ${totalGallerySlides}`;
-    }
 }
 
 function setupCoverAndMusic(musicUrl) {
