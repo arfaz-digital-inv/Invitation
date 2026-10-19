@@ -1,5 +1,7 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbyAPZQeJMWEm73SsZutxWk9QtCjG27dfkdqKZ6vUHrBNJXLtcFy4kqyNkT2IdpdL7BAeQ/exec";
 let globalSlug = "";
+let currentSlideIndex = 0;
+let totalGallerySlides = 0;
 
 document.addEventListener("DOMContentLoaded", async () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -34,7 +36,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const defaultGroomImg = "https://via.placeholder.com/300x300/181818/d4af37?text=Pria";
         const defaultBrideImg = "https://via.placeholder.com/300x300/181818/d4af37?text=Wanita";
 
-      // 3. Inject Data Utama, Foto, dan Silsilah Orang Tua ke HTML Template
+        // 3. Inject Data Utama, Foto, dan Silsilah Orang Tua ke HTML Template
         templateHtml = templateHtml
             .replace(/{{groom}}/g, data.groom || '')
             .replace(/{{bride}}/g, data.bride || '')
@@ -59,8 +61,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("app-root").innerHTML = templateHtml;
         document.getElementById("loading-screen").style.display = "none";
 
-        // 4. Inisialisasi Galeri Foto
-        renderGallery(data.galleryImgs);
+        // 4. Inisialisasi Galeri Foto (Sesuai Tema)
+        renderGallery(data.galleryImgs, data.theme);
 
         // 5. Inisialisasi Fitur Tambahan
         initCountdown(data.date);
@@ -82,20 +84,80 @@ function formatDate(isoString) {
     return d.toLocaleDateString("id-ID", { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-function renderGallery(galleryImgs) {
+function renderGallery(galleryImgs, themeName) {
     const container = document.getElementById("gallery-container");
     if (!container) return;
 
     if (!galleryImgs || galleryImgs.length === 0 || galleryImgs[0] === '') {
-        container.innerHTML = "<p style='color:#777;'>Belum ada foto di galeri.</p>";
+        container.innerHTML = "<p style='color:#777; font-size:0.9rem;'>Belum ada foto di galeri.</p>";
         return;
     }
 
-    container.innerHTML = galleryImgs.map(imgUrl => `
-        <div style="overflow:hidden; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.3);">
-            <img src="${escapeHtml(imgUrl)}" style="width:100%; height:100%; object-fit:cover; aspect-ratio:1/1; display:block; transition:transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-        </div>
-    `).join("");
+    // 1. TEMA JAWA KERATON: Render Galeri Model Slider / Carousel 2 Foto Berpasangan
+    if (themeName === "jawa-keraton-01") {
+        const pairs = [];
+        for (let i = 0; i < galleryImgs.length; i += 2) {
+            pairs.push(galleryImgs.slice(i, i + 2));
+        }
+        totalGallerySlides = pairs.length;
+        currentSlideIndex = 0;
+
+        let slidesHtml = pairs.map((pair, index) => `
+            <div class="gallery-slide ${index === 0 ? 'active' : ''}" style="display: ${index === 0 ? 'flex' : 'none'}; justify-content: center; gap: 15px; width: 100%;">
+                ${pair.map(imgUrl => `
+                    <div style="flex: 1; max-width: 250px; aspect-ratio: 1/1; overflow: hidden; border-radius: 10px; border: 1px solid #d4af37; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+                        <img src="${escapeHtml(imgUrl)}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                    </div>
+                `).join('')}
+            </div>
+        `).join('');
+
+        container.innerHTML = `
+            <div style="position: relative; max-width: 550px; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
+                ${slidesHtml}
+            </div>
+            ${totalGallerySlides > 1 ? `
+            <div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 15px;">
+                <button onclick="changeGallerySlide(-1)" style="background: #181818; color: #d4af37; border: 1px solid #d4af37; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; font-size: 1rem; font-weight: bold;">❮</button>
+                <span id="gallery-indicator" style="color: #f9e076; font-size: 0.85rem; font-family: 'Cinzel', serif;">1 / ${totalGallerySlides}</span>
+                <button onclick="changeGallerySlide(1)" style="background: #181818; color: #d4af37; border: 1px solid #d4af37; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; font-size: 1rem; font-weight: bold;">❯</button>
+            </div>
+            ` : ''}
+        `;
+
+        if (totalGallerySlides > 1) {
+            if (window.galleryInterval) clearInterval(window.galleryInterval);
+            window.galleryInterval = setInterval(() => {
+                changeGallerySlide(1);
+            }, 4000);
+        }
+
+    } else {
+        // 2. TEMA LAIN (Japandi, Rustic, dll): Render Galeri Model Grid Standar
+        container.innerHTML = galleryImgs.map(imgUrl => `
+            <div style="overflow:hidden; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.3);">
+                <img src="${escapeHtml(imgUrl)}" style="width:100%; height:100%; object-fit:cover; aspect-ratio:1/1; display:block; transition:transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            </div>
+        `).join("");
+    }
+}
+
+function changeGallerySlide(direction) {
+    const slides = document.querySelectorAll(".gallery-slide");
+    if (!slides.length) return;
+
+    slides[currentSlideIndex].style.display = "none";
+    slides[currentSlideIndex].classList.remove("active");
+
+    currentSlideIndex = (currentSlideIndex + direction + totalGallerySlides) % totalGallerySlides;
+
+    slides[currentSlideIndex].style.display = "flex";
+    slides[currentSlideIndex].classList.add("active");
+
+    const indicator = document.getElementById("gallery-indicator");
+    if (indicator) {
+        indicator.innerText = `${currentSlideIndex + 1} / ${totalGallerySlides}`;
+    }
 }
 
 function setupCoverAndMusic(musicUrl) {
