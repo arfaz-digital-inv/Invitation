@@ -78,3 +78,23 @@ h1, h2, h3 {
     background: #d4af37;
     border-radius: 10px;
 }
+/* Animasi Transisi Smooth Memudar ala PowerPoint (Wipe / Smooth Dissolve) */
+.gallery-slide.active {
+    animation: wipeFade 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes wipeFade {
+    0% {
+        opacity: 0;
+        transform: scale(0.96);
+        filter: blur(4px);
+    }
+    50% {
+        filter: blur(0px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0px);
+    }
+}
