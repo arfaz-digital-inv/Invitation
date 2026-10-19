@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const defaultGroomImg = "https://via.placeholder.com/300x300/181818/d4af37?text=Pria";
         const defaultBrideImg = "https://via.placeholder.com/300x300/181818/d4af37?text=Wanita";
 
-        // 3. Inject Data Utama, Foto, dan Silsilah Orang Tua ke HTML Template
+      // 3. Inject Data Utama, Foto, dan Silsilah Orang Tua ke HTML Template
         templateHtml = templateHtml
             .replace(/{{groom}}/g, data.groom || '')
             .replace(/{{bride}}/g, data.bride || '')
@@ -51,10 +51,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             .replace(/{{groomParents}}/g, data.groomParents || '')
             .replace(/{{brideParents}}/g, data.brideParents || '')
             .replace(/{{akadTime}}/g, data.akadTime || '')
-.replace(/{{akadPlace}}/g, data.akadPlace || '')
-.replace(/{{resepsiTime}}/g, data.resepsiTime || '')
-.replace(/{{resepsiPlace}}/g, data.resepsiPlace || '')
-.replace(/{{eventAddress}}/g, data.eventAddress || '');
+            .replace(/{{akadPlace}}/g, data.akadPlace || '')
+            .replace(/{{resepsiTime}}/g, data.resepsiTime || '')
+            .replace(/{{resepsiPlace}}/g, data.resepsiPlace || '')
+            .replace(/{{eventAddress}}/g, data.eventAddress || '');
 
         document.getElementById("app-root").innerHTML = templateHtml;
         document.getElementById("loading-screen").style.display = "none";
