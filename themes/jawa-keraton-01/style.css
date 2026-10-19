@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Great+Vibes&family=Marcellus&display=swap');
+
+body {
+    font-family: 'Marcellus', serif;
+    background-color: #0f0f0f;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3 {
+    font-family: 'Cinzel', serif;
+}
+
+.script-font {
+    font-family: 'Great Vibes', cursive;
+}
+
+/* Scrollbar Nuansa Emas */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-thumb {
+    background: #d4af37;
+    border-radius: 10px;
+}
