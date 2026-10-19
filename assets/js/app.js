@@ -23,33 +23,45 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const data = result.data;
 
-        // Load CSS Tema
+        // 1. Pasang Style CSS Tema
         document.getElementById("theme-style").href = `themes/${data.theme}/style.css`;
 
-        // Load HTML Tema
+        // 2. Fetch Template HTML Tema
         const templateResponse = await fetch(`themes/${data.theme}/template.html`);
         let templateHtml = await templateResponse.text();
 
-        // Inject Data Utama
+        // Placeholder default untuk foto jika kosong
+        const defaultGroomImg = "https://via.placeholder.com/300x300?text=Pria";
+        const defaultBrideImg = "https://via.placeholder.com/300x300?text=Wanita";
+
+        // 3. Inject Data Utama & Foto ke HTML Template
         templateHtml = templateHtml
-            .replace(/{{groom}}/g, data.groom)
-            .replace(/{{bride}}/g, data.bride)
+            .replace(/{{groom}}/g, data.groom || '')
+            .replace(/{{bride}}/g, data.bride || '')
             .replace(/{{date}}/g, formatDate(data.date))
             .replace(/{{guestName}}/g, guestName)
-            .replace(/{{mapUrl}}/g, data.mapUrl)
-            .replace(/{{musicUrl}}/g, data.musicUrl)
+            .replace(/{{mapUrl}}/g, data.mapUrl || '#')
             .replace(/{{bankName}}/g, data.bankName || '-')
             .replace(/{{bankNo}}/g, data.bankNo || '-')
-            .replace(/{{bankOwner}}/g, data.bankOwner || '-');
+            .replace(/{{bankOwner}}/g, data.bankOwner || '-')
+            .replace(/{{groomImg}}/g, data.groomImg || defaultGroomImg)
+            .replace(/{{brideImg}}/g, data.brideImg || defaultBrideImg)
+            .replace(/{{storyTitle}}/g, data.storyTitle || 'Kisah Cinta Kami')
+            .replace(/{{storyText}}/g, data.storyText || 'Terima kasih telah menjadi bagian dari perjalanan cinta kami.');
 
         document.getElementById("app-root").innerHTML = templateHtml;
         document.getElementById("loading-screen").style.display = "none";
 
-        // Inisialisasi Fitur Tambahan
+        // 4. Inisialisasi Galeri Foto
+        renderGallery(data.galleryImgs);
+
+        // 5. Inisialisasi Fitur Tambahan
         initCountdown(data.date);
-        initMusic(data.musicUrl);
         renderRSVPList(data.rsvpList);
         setupRSVPForm();
+
+        // 6. Setup Tombol Buka Undangan & Autoplay Musik
+        setupCoverAndMusic(data.musicUrl);
 
     } catch (error) {
         console.error(error);
@@ -57,14 +69,84 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// 1. Fitur Format Tanggal
+// Format Tanggal Indonesia
 function formatDate(isoString) {
     const d = new Date(isoString);
-    if (isNaN(d.getTime())) return isoString;
+    if (isNaN(d.getTime())) return isoString || '';
     return d.toLocaleDateString("id-ID", { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-// 2. Fitur Countdown Timer
+// Render Galeri Foto
+function renderGallery(galleryImgs) {
+    const container = document.getElementById("gallery-container");
+    if (!container) return;
+
+    if (!galleryImgs || galleryImgs.length === 0 || galleryImgs[0] === '') {
+        container.innerHTML = "<p style='color:#777;'>Belum ada foto di galeri.</p>";
+        return;
+    }
+
+    container.innerHTML = galleryImgs.map(imgUrl => `
+        <div style="overflow:hidden; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+            <img src="${escapeHtml(imgUrl)}" style="width:100%; height:100%; object-fit:cover; aspect-ratio:1/1; display:block; transition:transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        </div>
+    `).join("");
+}
+
+// Fitur Cover Front & Autoplay Audio
+function setupCoverAndMusic(musicUrl) {
+    const btnOpen = document.getElementById("btn-open-invitation");
+    const coverCard = document.getElementById("cover-card");
+    let audio = null;
+
+    if (musicUrl) {
+        audio = new Audio(musicUrl);
+        audio.loop = true;
+    }
+
+    // Kunci scroll halaman sebelum dibuka
+    document.body.style.overflow = "hidden";
+
+    if (btnOpen && coverCard) {
+        btnOpen.addEventListener("click", () => {
+            // Animasi Cover Menghilang
+            coverCard.style.transition = "opacity 0.8s ease, transform 0.8s ease";
+            coverCard.style.opacity = "0";
+            coverCard.style.transform = "translateY(-100%)";
+
+            setTimeout(() => {
+                coverCard.style.display = "none";
+                document.body.style.overflow = "auto"; // Buka scroll
+            }, 800);
+
+            // Play Musik jika ada
+            if (audio) {
+                audio.play().catch(err => console.log("Autoplay diblokir browser:", err));
+                const musicBtn = document.getElementById("music-btn");
+                if (musicBtn) {
+                    musicBtn.style.display = "block";
+                    musicBtn.innerText = "🎵 Jeda Musik";
+                }
+            }
+        });
+    }
+
+    // Toggle Tombol Musik Floating
+    const musicBtn = document.getElementById("music-btn");
+    if (musicBtn && audio) {
+        musicBtn.addEventListener("click", () => {
+            if (audio.paused) {
+                audio.play();
+                musicBtn.innerText = "🎵 Jeda Musik";
+            } else {
+                audio.pause();
+                musicBtn.innerText = "🎵 Putar Musik";
+            }
+        });
+    }
+}
+
+// Hitung Mundur Acara
 function initCountdown(targetDateStr) {
     const targetDate = new Date(targetDateStr).getTime();
     if (isNaN(targetDate)) return;
@@ -75,9 +157,8 @@ function initCountdown(targetDateStr) {
 
         if (diff < 0) {
             clearInterval(timer);
-            if(document.getElementById("countdown")) {
-                document.getElementById("countdown").innerHTML = "Acara Telah Berlangsung";
-            }
+            const cdBox = document.getElementById("countdown");
+            if (cdBox) cdBox.innerHTML = "<h4>Acara Telah Berlangsung</h4>";
             return;
         }
 
@@ -86,52 +167,35 @@ function initCountdown(targetDateStr) {
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-        if(document.getElementById("days")) document.getElementById("days").innerText = days;
-        if(document.getElementById("hours")) document.getElementById("hours").innerText = hours;
-        if(document.getElementById("minutes")) document.getElementById("minutes").innerText = minutes;
-        if(document.getElementById("seconds")) document.getElementById("seconds").innerText = seconds;
+        if (document.getElementById("days")) document.getElementById("days").innerText = days;
+        if (document.getElementById("hours")) document.getElementById("hours").innerText = hours;
+        if (document.getElementById("minutes")) document.getElementById("minutes").innerText = minutes;
+        if (document.getElementById("seconds")) document.getElementById("seconds").innerText = seconds;
     }, 1000);
 }
 
-// 3. Fitur Musik Player
-function initMusic(musicUrl) {
-    if (!musicUrl) return;
-    const audio = new Audio(musicUrl);
-    audio.loop = true;
-
-    const btn = document.getElementById("music-btn");
-    if (btn) {
-        btn.addEventListener("click", () => {
-            if (audio.paused) {
-                audio.play();
-                btn.innerText = "🎵 Jeda Musik";
-            } else {
-                audio.pause();
-                btn.innerText = "🎵 Putar Musik";
-            }
-        });
-    }
-}
-
-// 4. Render Daftar Ucapan
+// Render Ucapan RSVP
 function renderRSVPList(rsvpList) {
     const container = document.getElementById("rsvp-list");
     if (!container) return;
 
     if (!rsvpList || rsvpList.length === 0) {
-        container.innerHTML = "<p style='color:#777;'>Belum ada ucapan. Jadilah yang pertama!</p>";
+        container.innerHTML = "<p style='color:#777; font-size:0.9rem;'>Belum ada ucapan. Jadilah yang pertama memberikan doa!</p>";
         return;
     }
 
     container.innerHTML = rsvpList.map(item => `
-        <div style="background:#fff; padding:12px; margin-bottom:10px; border-radius:6px; text-align:left; border-left:4px solid #5a4033;">
-            <strong>${escapeHtml(item.name)}</strong> <small style="color:#888;">(${item.attendance})</small>
-            <p style="margin:5px 0 0 0; color:#444;">${escapeHtml(item.message)}</p>
+        <div style="background:#fff; padding:14px; margin-bottom:12px; border-radius:8px; text-align:left; border-left:4px solid #5a4033; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color:#333;">${escapeHtml(item.name)}</strong>
+                <small style="padding:2px 8px; background:#e8e1d7; border-radius:10px; font-size:0.75rem; color:#5a4033;">${escapeHtml(item.attendance)}</small>
+            </div>
+            <p style="margin:8px 0 0 0; color:#555; font-size:0.9rem; line-height:1.4;">${escapeHtml(item.message)}</p>
         </div>
     `).join("");
 }
 
-// 5. Kirim Form RSVP ke Apps Script
+// Kirim Form RSVP
 function setupRSVPForm() {
     const form = document.getElementById("rsvp-form");
     if (!form) return;
@@ -157,18 +221,17 @@ function setupRSVPForm() {
             const result = await res.json();
 
             if (result.status === "success") {
-                alert("Terima kasih! Ucapan Anda telah terkirim.");
+                alert("Terima kasih! Ucapan Anda berhasil terkirim.");
                 form.reset();
-                // Reload data ucapan
                 const response = await fetch(`${API_URL}?u=${encodeURIComponent(globalSlug)}`);
                 const latest = await response.json();
-                if(latest.data) renderRSVPList(latest.data.rsvpList);
+                if (latest.data) renderRSVPList(latest.data.rsvpList);
             } else {
                 alert("Gagal mengirim ucapan.");
             }
         } catch (err) {
             console.error(err);
-            alert("Terjadi kesalahan.");
+            alert("Terjadi kesalahan koneksi.");
         } finally {
             btn.disabled = false;
             btn.innerText = "Kirim Ucapan";
@@ -177,5 +240,5 @@ function setupRSVPForm() {
 }
 
 function escapeHtml(text) {
-    return text.replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m]);
+    return String(text).replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m]);
 }
