@@ -13,11 +13,10 @@ html, body {
 
 body {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    /* Menggabungkan warna solid dasar dengan pattern gelombang transparan */
-    background-color: #f3f6f9;
-    background-image: linear-gradient(rgba(243, 246, 249, 0.92), rgba(243, 246, 249, 0.92)), url('pattern-wave.png');
+    background-color: #fcfbfa; /* Krem sangat terang */
+    background-image: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('pattern-wave.png');
     background-repeat: repeat;
-    background-size: 180px;
+    background-size: 150px;
     color: #212b36;
     line-height: 1.6;
     overflow-x: hidden;
