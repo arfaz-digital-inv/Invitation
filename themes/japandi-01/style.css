@@ -6,21 +6,26 @@
     padding: 0;
 }
 
+html, body {
+    width: 100%;
+    overflow-x: hidden; /* Mencegah halaman bisa digeser ke samping */
+}
+
 body {
     font-family: 'Plus Jakarta Sans', sans-serif;
     background: linear-gradient(rgba(243, 246, 249, 0.94), rgba(243, 246, 249, 0.94)), url('pattern-wave.png') repeat;
     background-size: 180px;
     color: #212b36;
     line-height: 1.6;
-    overflow-x: hidden;
 }
 
 h1, h2, h3, h4 {
     font-family: 'Playfair Display', serif;
     color: #2c3e55;
+    word-break: break-word;
 }
 
-/* COVER UTAMA DENGAN ORNAMEN GUNUNG FUJI */
+/* COVER UTAMA HP & DESKTOP */
 #cover-card {
     position: fixed;
     top: 0;
@@ -43,30 +48,32 @@ h1, h2, h3, h4 {
     text-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 
-/* CARD KARTU JAPANDI DENGAN FRAME CORNER */
+/* KARTU JAPANDI RESPONSIF */
 .japandi-card {
     position: relative;
     background: #ffffff;
     border-radius: 16px;
-    padding: 35px 24px;
+    padding: 24px 16px;
     box-shadow: 0 8px 25px rgba(44, 62, 85, 0.06);
     border: 1px solid #e2e8f0;
+    margin: 0 auto;
+    width: 100%;
 }
 
-/* WADAH FOTO MEMPELAI BERBINGKAI FRAME JEPANG */
+/* WADAH FOTO MEMPELAI & BINGKAI PRESISI TENGAH */
 .bride-groom-frame {
     position: relative;
-    width: 150px;
-    height: 150px;
-    margin: 0 auto 15px auto;
+    width: 130px;
+    height: 130px;
+    margin: 0 auto 12px auto;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .bride-groom-frame img.avatar {
-    width: 120px;
-    height: 120px;
+    width: 105px;
+    height: 105px;
     border-radius: 50%;
     object-fit: cover;
 }
@@ -81,10 +88,10 @@ h1, h2, h3, h4 {
     pointer-events: none;
 }
 
-/* TOMBOL ORANYE SUNSET FUJI */
+/* TOMBOL RESPONSIF */
 .btn-japandi {
     display: inline-block;
-    padding: 12px 28px;
+    padding: 12px 24px;
     background-color: #e8997a;
     color: #ffffff;
     border-radius: 30px;
@@ -99,21 +106,19 @@ h1, h2, h3, h4 {
 
 .btn-japandi:hover {
     background-color: #d88261;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(232, 153, 122, 0.4);
 }
 
-/* GALERI GRID JAPANDI */
+/* GALERI GRID JAPANDI MOBILE FRIENDLY */
 #gallery-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 12px;
-    max-width: 700px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 100%;
     margin: 0 auto;
 }
 
 #gallery-container div {
-    border-radius: 12px;
+    border-radius: 10px;
     overflow: hidden;
     aspect-ratio: 1/1;
     box-shadow: 0 4px 10px rgba(0,0,0,0.08);
@@ -123,9 +128,41 @@ h1, h2, h3, h4 {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.4s ease;
 }
 
-#gallery-container img:hover {
-    transform: scale(1.05);
+/* KHUSUS TAMPILAN HP (MOBILE LAYOUT FIX) */
+@media screen and (max-width: 480px) {
+    #cover-card h1 {
+        font-size: 2rem !important;
+    }
+
+    .mempelai-flex-container {
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+
+    .acara-flex-container {
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+
+    #countdown {
+        gap: 8px !important;
+    }
+
+    #countdown div {
+        min-width: 50px !important;
+        padding: 8px 6px !important;
+    }
+
+    #countdown span {
+        font-size: 1.1rem !important;
+    }
+
+    #music-btn {
+        bottom: 15px !important;
+        right: 15px !important;
+        padding: 8px 14px !important;
+        font-size: 0.75rem !important;
+    }
 }
