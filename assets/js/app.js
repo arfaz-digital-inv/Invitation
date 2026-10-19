@@ -30,11 +30,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         const templateResponse = await fetch(`themes/${data.theme}/template.html`);
         let templateHtml = await templateResponse.text();
 
-        // Placeholder default untuk foto jika kosong
-        const defaultGroomImg = "https://via.placeholder.com/300x300?text=Pria";
-        const defaultBrideImg = "https://via.placeholder.com/300x300?text=Wanita";
+        // Placeholder default
+        const defaultGroomImg = "https://via.placeholder.com/300x300/181818/d4af37?text=Pria";
+        const defaultBrideImg = "https://via.placeholder.com/300x300/181818/d4af37?text=Wanita";
 
-        // 3. Inject Data Utama & Foto ke HTML Template
+        // 3. Inject Data Utama, Foto, dan Silsilah Orang Tua ke HTML Template
         templateHtml = templateHtml
             .replace(/{{groom}}/g, data.groom || '')
             .replace(/{{bride}}/g, data.bride || '')
@@ -47,7 +47,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             .replace(/{{groomImg}}/g, data.groomImg || defaultGroomImg)
             .replace(/{{brideImg}}/g, data.brideImg || defaultBrideImg)
             .replace(/{{storyTitle}}/g, data.storyTitle || 'Kisah Cinta Kami')
-            .replace(/{{storyText}}/g, data.storyText || 'Terima kasih telah menjadi bagian dari perjalanan cinta kami.');
+            .replace(/{{storyText}}/g, data.storyText || 'Terima kasih telah menjadi bagian dari perjalanan cinta kami.')
+            .replace(/{{groomParents}}/g, data.groomParents || '')
+            .replace(/{{brideParents}}/g, data.brideParents || '');
 
         document.getElementById("app-root").innerHTML = templateHtml;
         document.getElementById("loading-screen").style.display = "none";
@@ -69,14 +71,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// Format Tanggal Indonesia
 function formatDate(isoString) {
     const d = new Date(isoString);
     if (isNaN(d.getTime())) return isoString || '';
     return d.toLocaleDateString("id-ID", { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-// Render Galeri Foto
 function renderGallery(galleryImgs) {
     const container = document.getElementById("gallery-container");
     if (!container) return;
@@ -87,13 +87,12 @@ function renderGallery(galleryImgs) {
     }
 
     container.innerHTML = galleryImgs.map(imgUrl => `
-        <div style="overflow:hidden; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+        <div style="overflow:hidden; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.3);">
             <img src="${escapeHtml(imgUrl)}" style="width:100%; height:100%; object-fit:cover; aspect-ratio:1/1; display:block; transition:transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
         </div>
     `).join("");
 }
 
-// Fitur Cover Front & Autoplay Audio
 function setupCoverAndMusic(musicUrl) {
     const btnOpen = document.getElementById("btn-open-invitation");
     const coverCard = document.getElementById("cover-card");
@@ -104,22 +103,19 @@ function setupCoverAndMusic(musicUrl) {
         audio.loop = true;
     }
 
-    // Kunci scroll halaman sebelum dibuka
     document.body.style.overflow = "hidden";
 
     if (btnOpen && coverCard) {
         btnOpen.addEventListener("click", () => {
-            // Animasi Cover Menghilang
             coverCard.style.transition = "opacity 0.8s ease, transform 0.8s ease";
             coverCard.style.opacity = "0";
             coverCard.style.transform = "translateY(-100%)";
 
             setTimeout(() => {
                 coverCard.style.display = "none";
-                document.body.style.overflow = "auto"; // Buka scroll
+                document.body.style.overflow = "auto";
             }, 800);
 
-            // Play Musik jika ada
             if (audio) {
                 audio.play().catch(err => console.log("Autoplay diblokir browser:", err));
                 const musicBtn = document.getElementById("music-btn");
@@ -131,7 +127,6 @@ function setupCoverAndMusic(musicUrl) {
         });
     }
 
-    // Toggle Tombol Musik Floating
     const musicBtn = document.getElementById("music-btn");
     if (musicBtn && audio) {
         musicBtn.addEventListener("click", () => {
@@ -146,7 +141,6 @@ function setupCoverAndMusic(musicUrl) {
     }
 }
 
-// Hitung Mundur Acara
 function initCountdown(targetDateStr) {
     const targetDate = new Date(targetDateStr).getTime();
     if (isNaN(targetDate)) return;
@@ -174,7 +168,6 @@ function initCountdown(targetDateStr) {
     }, 1000);
 }
 
-// Render Ucapan RSVP
 function renderRSVPList(rsvpList) {
     const container = document.getElementById("rsvp-list");
     if (!container) return;
@@ -185,17 +178,16 @@ function renderRSVPList(rsvpList) {
     }
 
     container.innerHTML = rsvpList.map(item => `
-        <div style="background:#fff; padding:14px; margin-bottom:12px; border-radius:8px; text-align:left; border-left:4px solid #5a4033; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+        <div style="background:#181818; padding:14px; margin-bottom:12px; border-radius:8px; text-align:left; border-left:4px solid #d4af37; box-shadow:0 1px 4px rgba(0,0,0,0.5);">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong style="color:#333;">${escapeHtml(item.name)}</strong>
-                <small style="padding:2px 8px; background:#e8e1d7; border-radius:10px; font-size:0.75rem; color:#5a4033;">${escapeHtml(item.attendance)}</small>
+                <strong style="color:#f9e076;">${escapeHtml(item.name)}</strong>
+                <small style="padding:2px 8px; background:#222; border-radius:10px; font-size:0.75rem; color:#d4af37; border:1px solid #d4af37;">${escapeHtml(item.attendance)}</small>
             </div>
-            <p style="margin:8px 0 0 0; color:#555; font-size:0.9rem; line-height:1.4;">${escapeHtml(item.message)}</p>
+            <p style="margin:8px 0 0 0; color:#ccc; font-size:0.9rem; line-height:1.4;">${escapeHtml(item.message)}</p>
         </div>
     `).join("");
 }
 
-// Kirim Form RSVP
 function setupRSVPForm() {
     const form = document.getElementById("rsvp-form");
     if (!form) return;
@@ -234,7 +226,7 @@ function setupRSVPForm() {
             alert("Terjadi kesalahan koneksi.");
         } finally {
             btn.disabled = false;
-            btn.innerText = "Kirim Ucapan";
+            btn.innerText = "Kirim Donga Pangestu";
         }
     });
 }
