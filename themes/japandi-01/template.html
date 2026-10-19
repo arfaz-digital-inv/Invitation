@@ -1,15 +1,60 @@
+<!-- Musik Floating Button -->
+<button id="music-btn" style="position:fixed; bottom:20px; right:20px; z-index:99; padding:10px 15px; background:#5a4033; color:#fff; border:none; border-radius:20px; cursor:pointer;">🎵 Putar Musik</button>
+
+<!-- Hero Section -->
 <section style="text-align: center; padding: 60px 20px; background-color: #e8e1d7;">
     <p style="letter-spacing: 2px; text-transform: uppercase; font-size: 0.9rem;">Walimatul 'Ursy</p>
     <h1 style="font-size: 2.5rem; color: #5a4033; margin: 15px 0;">{{groom}} & {{bride}}</h1>
     
-    <div style="margin-top: 30px; background: #fff; display: inline-block; padding: 15px 30px; border-radius: 8px;">
+    <div style="margin-top: 20px; background: #fff; display: inline-block; padding: 15px 30px; border-radius: 8px;">
         <p style="margin: 0; font-size: 0.85rem; color: #777;">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
         <h3 style="margin: 5px 0 0 0; color: #333;">{{guestName}}</h3>
     </div>
 </section>
 
-<section style="text-align: center; padding: 40px 20px;">
+<!-- Section Countdown -->
+<section style="text-align: center; padding: 30px 20px; background:#f4f0ea;">
+    <h3>Hitung Mundur Acara</h3>
+    <div id="countdown" style="display:flex; justify-content:center; gap:15px; font-weight:bold;">
+        <div><span id="days">0</span><br><small>Hari</small></div>
+        <div><span id="hours">0</span><br><small>Jam</small></div>
+        <div><span id="minutes">0</span><br><small>Menit</small></div>
+        <div><span id="seconds">0</span><br><small>Detik</small></div>
+    </div>
+</section>
+
+<!-- Section Acara & Lokasi -->
+<section style="text-align: center; padding: 40px 20px; background:#fff;">
     <h2>Acara Pernikahan</h2>
     <p>Tanggal: <strong>{{date}}</strong></p>
-    <a href="{{mapUrl}}" target="_blank" style="display: inline-block; padding: 10px 20px; background-color: #5a4033; color: #fff; text-decoration: none; border-radius: 5px; margin-top: 15px;">Buka Peta Lokasi</a>
+    <a href="{{mapUrl}}" target="_blank" style="display: inline-block; padding: 10px 20px; background-color: #5a4033; color: #fff; text-decoration: none; border-radius: 5px; margin-top: 10px;">Buka Peta Lokasi</a>
+</section>
+
+<!-- Section Hadiah / Amplop Digital -->
+<section style="text-align: center; padding: 40px 20px; background:#e8e1d7;">
+    <h2>Amplop Digital</h2>
+    <p>Doa restu Anda merupakan hadiah terindah bagi kami. Namun jika ingin memberi hadiah, Anda dapat mentransfer melalui:</p>
+    <div style="background:#fff; display:inline-block; padding:20px; border-radius:8px; margin-top:10px;">
+        <h4 style="margin:0; color:#5a4033;">{{bankName}}</h4>
+        <p style="font-size:1.2rem; font-weight:bold; margin:5px 0;">{{bankNo}}</p>
+        <p style="margin:0; color:#666;">a.n. {{bankOwner}}</p>
+    </div>
+</section>
+
+<!-- Section Buku Tamu & RSVP -->
+<section style="text-align: center; padding: 40px 20px; max-width:500px; margin:0 auto;">
+    <h2>Konfirmasi Kehadiran & Ucapan</h2>
+    <form id="rsvp-form" style="display:flex; flex-direction:column; gap:10px; margin-bottom:30px;">
+        <input type="text" id="rsvp-name" placeholder="Nama Anda" required style="padding:10px; border:1px solid #ccc; border-radius:4px;">
+        <select id="rsvp-attendance" style="padding:10px; border:1px solid #ccc; border-radius:4px;">
+            <option value="Hadir">Hadir</option>
+            <option value="Tidak Hadir">Tidak Hadir</option>
+            <option value="Ragu-ragu">Ragu-ragu</option>
+        </select>
+        <textarea id="rsvp-message" placeholder="Tulis ucapan & doa..." rows="3" required style="padding:10px; border:1px solid #ccc; border-radius:4px;"></textarea>
+        <button type="submit" style="padding:12px; background:#5a4033; color:#fff; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">Kirim Ucapan</button>
+    </form>
+
+    <h3>Daftar Ucapan</h3>
+    <div id="rsvp-list"></div>
 </section>
