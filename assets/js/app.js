@@ -93,7 +93,6 @@ function renderGallery(galleryImgs, themeName) {
         return;
     }
 
-    // 1. TEMA JAWA KERATON: Slider Otomatis 2 Foto Berpasangan Tanpa Tombol Manual
     if (themeName === "jawa-keraton-01") {
         const pairs = [];
         for (let i = 0; i < galleryImgs.length; i += 2) {
@@ -103,23 +102,21 @@ function renderGallery(galleryImgs, themeName) {
         currentSlideIndex = 0;
 
         let slidesHtml = pairs.map((pair, index) => `
-            <div class="gallery-slide ${index === 0 ? 'active' : ''}" style="display: ${index === 0 ? 'flex' : 'none'}; justify-content: center; gap: 15px; width: 100%;">
+            <div class="gallery-slide ${index === 0 ? 'active' : ''}">
                 ${pair.map(imgUrl => `
-                    <div style="flex: 1; max-width: 250px; aspect-ratio: 1/1; overflow: hidden; border-radius: 10px; border: 1px solid #d4af37; box-shadow: 0 4px 12px rgba(0,0,0,0.6);">
-                        <img src="${escapeHtml(imgUrl)}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                    <div class="gallery-card">
+                        <img src="${escapeHtml(imgUrl)}">
                     </div>
                 `).join('')}
             </div>
         `).join('');
 
-        // Wadah Murni Foto Tanpa Tombol Panah
         container.innerHTML = `
-            <div style="position: relative; max-width: 520px; margin: 0 auto; display: flex; align-items: center; justify-content: center; min-height: 250px;">
+            <div class="gallery-slider-wrapper">
                 ${slidesHtml}
             </div>
         `;
 
-        // Pindah Slide Otomatis Setiap 3.5 Detik
         if (totalGallerySlides > 1) {
             if (window.galleryInterval) clearInterval(window.galleryInterval);
             window.galleryInterval = setInterval(() => {
@@ -128,7 +125,6 @@ function renderGallery(galleryImgs, themeName) {
         }
 
     } else {
-        // 2. TEMA LAIN (Japandi, Rustic, dll): Render Galeri Model Grid Standar
         container.innerHTML = galleryImgs.map(imgUrl => `
             <div style="overflow:hidden; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.3);">
                 <img src="${escapeHtml(imgUrl)}" style="width:100%; height:100%; object-fit:cover; aspect-ratio:1/1; display:block; transition:transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
@@ -137,17 +133,12 @@ function renderGallery(galleryImgs, themeName) {
     }
 }
 
-// Fungsi Pindah Slide Otomatis
 function autoNextGallerySlide() {
     const slides = document.querySelectorAll(".gallery-slide");
     if (!slides.length) return;
 
-    slides[currentSlideIndex].style.display = "none";
     slides[currentSlideIndex].classList.remove("active");
-
     currentSlideIndex = (currentSlideIndex + 1) % totalGallerySlides;
-
-    slides[currentSlideIndex].style.display = "flex";
     slides[currentSlideIndex].classList.add("active");
 }
 
