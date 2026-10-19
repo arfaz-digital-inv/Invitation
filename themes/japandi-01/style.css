@@ -1,7 +1,132 @@
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f0ea;
-    color: #333;
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,400&display=swap');
+
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    /* Pattern Seigaiha sebagai Latar Belakang Transparan Halus */
+    background: linear-gradient(rgba(243, 246, 249, 0.94), rgba(243, 246, 249, 0.94)), url('images/pattern-wave.png') repeat;
+    background-size: 180px;
+    color: #212b36;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Playfair Display', serif;
+    color: #2c3e55;
+}
+
+/* COVER UTAMA DENGAN ORNAMEN GUNUNG FUJI */
+#cover-card {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(33, 43, 54, 0.45), rgba(33, 43, 54, 0.85)), url('images/fuji-cover.png') center/cover no-repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    text-align: center;
+    padding: 20px;
+    color: #ffffff;
+}
+
+#cover-card h1 {
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* CARD KARTU JAPANDI DENGAN FRAME CORNER */
+.japandi-card {
+    position: relative;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 35px 24px;
+    box-shadow: 0 8px 25px rgba(44, 62, 85, 0.06);
+    border: 1px solid #e2e8f0;
+}
+
+/* WADAH FOTO MEMPELAI BERBINGKAI FRAME JEPANG */
+.bride-groom-frame {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 15px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bride-groom-frame img.avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.bride-groom-frame .corner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('images/frame.png') center/contain no-repeat;
+    pointer-events: none;
+}
+
+/* TOMBOL ORANYE SUNSET FUJI */
+.btn-japandi {
+    display: inline-block;
+    padding: 12px 28px;
+    background-color: #e8997a;
+    color: #ffffff;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(232, 153, 122, 0.3);
+}
+
+.btn-japandi:hover {
+    background-color: #d88261;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(232, 153, 122, 0.4);
+}
+
+/* GALERI GRID JAPANDI */
+#gallery-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+#gallery-container div {
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 1/1;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+#gallery-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+#gallery-container img:hover {
+    transform: scale(1.05);
 }
