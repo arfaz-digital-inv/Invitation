@@ -111,11 +111,9 @@ function renderGallery(galleryImgs, themeName) {
             </div>
         `).join('');
 
-        container.innerHTML = `
-            <div class="gallery-slider-wrapper">
-                ${slidesHtml}
-            </div>
-        `;
+        // Terapkan wrapper langsung pada container
+        container.className = "gallery-slider-wrapper";
+        container.innerHTML = slidesHtml;
 
         if (totalGallerySlides > 1) {
             if (window.galleryInterval) clearInterval(window.galleryInterval);
