@@ -2,10 +2,11 @@
 
 body {
     font-family: 'Marcellus', serif;
-    background-color: #0f0f0f;
+    background-color: #0d0d0d;
     color: #e0e0e0;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 }
 
 h1, h2, h3 {
@@ -16,7 +17,60 @@ h1, h2, h3 {
     font-family: 'Great Vibes', cursive;
 }
 
-/* Scrollbar Nuansa Emas */
+/* Background Watermark Mandala Berputar Transparan */
+.mandala-watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    height: 320px;
+    background-image: url('../../assets/images/mandala-bg.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.12;
+    pointer-events: none;
+    z-index: 1;
+    animation: rotateMandala 60s linear infinite;
+}
+
+@keyframes rotateMandala {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Container Foto dengan Frame Emas Custom */
+.photo-frame-wrapper {
+    position: relative;
+    width: 200px;
+    height: 250px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Foto Mempelai di Dalam Frame */
+.photo-frame-wrapper img.profile-img {
+    width: 140px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* Overlay Frame Ukir Emas di Atas Foto */
+.photo-frame-wrapper img.frame-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+/* Scrollbar Emas */
 ::-webkit-scrollbar {
     width: 6px;
 }
