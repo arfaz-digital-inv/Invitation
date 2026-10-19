@@ -49,7 +49,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             .replace(/{{storyTitle}}/g, data.storyTitle || 'Kisah Cinta Kami')
             .replace(/{{storyText}}/g, data.storyText || 'Terima kasih telah menjadi bagian dari perjalanan cinta kami.')
             .replace(/{{groomParents}}/g, data.groomParents || '')
-            .replace(/{{brideParents}}/g, data.brideParents || '');
+            .replace(/{{brideParents}}/g, data.brideParents || '')
+            .replace(/{{akadTime}}/g, data.akadTime || '')
+.replace(/{{akadPlace}}/g, data.akadPlace || '')
+.replace(/{{resepsiTime}}/g, data.resepsiTime || '')
+.replace(/{{resepsiPlace}}/g, data.resepsiPlace || '')
+.replace(/{{eventAddress}}/g, data.eventAddress || '');
 
         document.getElementById("app-root").innerHTML = templateHtml;
         document.getElementById("loading-screen").style.display = "none";
